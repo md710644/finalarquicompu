@@ -10,8 +10,8 @@
 	// Output Ports
 	output [65:0] write_line,
 	output we, 
-	output gnt_CPU, 
-	output gnt_EXT
+	output reg gnt_CPU, 
+	output reg gnt_EXT
 );
 /*
    input clk, 
