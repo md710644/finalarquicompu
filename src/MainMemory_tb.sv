@@ -1,5 +1,6 @@
 //`include "definesPkg.sv"
 
+
 module MainMemory_tb;
 
 import definesPkg::*;
@@ -28,24 +29,40 @@ always
 		#10 clk = ~clk;
 		
  task read_all_memory;
-	 for (integer i =0; i< 2 ; i = 1+1) begin
+  $display ("Starting memory reads");
+	 for (integer i =0; i< 2 ; i = i+1) begin
 		for (integer j = 0; j < 255; j = j + 1) begin
-			@(posedge clk) addr.Page_reference <= i; addr.Address_code <= j;
+			@(posedge clk)
+			addr.Page_reference <= i;
+			addr.Address_code <= j;
 		end
 	 end
  endtask
 
+ task write_all_memory;
+ $display ("Starting memory writes");
+ we= 1'b1;
+	 for (integer i =0; i< 2 ; i = i+1) begin
+		for (integer j = 0; j < 255; j = j + 1) begin
+			@(posedge clk) 
+			addr.Page_reference <= i;
+			addr.Address_code <= j;
+			//synthesis translate_off 
+			wdata.Data <= {$urandom(), $urandom()};//Random
+			//synthesis translate_on
+			mesi_state_in <= INV;
+		end
+	 end
+ we = 1'b0;
+ endtask
 
 initial begin
-$monitor ("The read data is %h at time=%t", rdata.Data, $time);
+$monitor ("Read data for Page:%h Addr:%h is %h at time=%4t", addr.Page_reference, addr.Address_code, rdata.Data,  $time);
 read_all_memory();
+write_all_memory();
 $finish;
 end
-/*initial
-begin
- $recordfile("main_memory_tb.txt");
- $recordvars();
-end*/
+
 
  //monitor event
   always_ff @(posedge clk) begin
@@ -56,4 +73,3 @@ end*/
  end
 
 endmodule
-
