@@ -8,9 +8,9 @@ import definesPkg::*;
    logic clk;
 	logic reset;
 	Taddress addr;
-	Tdata_sb wdata; 
+	logic [63:0] wdata; 
 	logic we;
-	Tdata_sb rdata;
+	logic [63:0] rdata;
 	Tmesi_state mesi_state_out;
 	Tmesi_state mesi_state_in;
 
@@ -48,7 +48,7 @@ always
 			addr.Page_reference <= i;
 			addr.Address_code <= j;
 			//synthesis translate_off 
-			wdata.Data <= {$urandom(), $urandom()};//Random
+			wdata <= {$urandom(), $urandom()};//Random
 			//synthesis translate_on
 			mesi_state_in <= INV;
 		end
@@ -57,7 +57,7 @@ always
  endtask
 
 initial begin
-$monitor ("Read data for Page:%h Addr:%h is %h at time=%4t", addr.Page_reference, addr.Address_code, rdata.Data,  $time);
+$monitor ("Read data for Page:%h Addr:%h is %h at time=%4t", addr.Page_reference, addr.Address_code, rdata,  $time);
 read_all_memory();
 write_all_memory();
 $finish;

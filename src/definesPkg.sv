@@ -4,8 +4,8 @@
  //=================================================
  package definesPkg;
  typedef struct {
-     logic [7:0] Type;//Read, Write, Ack, retry
-     logic [7:0] Size;
+     logic [7:0] Type;//Read, Write, Grant, retry, req_bus
+     logic [7:0] Size;// pensar despues
   } Theader;
   
     typedef struct {
@@ -19,7 +19,7 @@
   
    typedef struct {
 	  logic [7:0] Address_code;
-	  logic [15:0] Page_reference;
+	  logic [2:0] Page_reference;
 	} Taddress;
 	
 	typedef enum logic [1:0] {

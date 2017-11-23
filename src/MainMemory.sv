@@ -11,10 +11,10 @@ module MainMemory(
    input clk, 
 	input reset,
 	input Taddress addr,
-	input Tdata_sb wdata, 
+	input [63:0] wdata, 
 	input we,
 	input Tmesi_state mesi_state_in,
-	output Tdata_sb rdata,
+	output [63:0] rdata,
 	output Tmesi_state mesi_state_out
 	//input [65:0] write_line, 
 	//output [65:0] read_line
@@ -68,8 +68,8 @@ end
 		end
 	end
 	
-	assign write_line = we ? {mesi_state_in, wdata.Data} : 'bz;
-	assign rdata.Data = read_line[63:0];
+	assign write_line = we ? {mesi_state_in, wdata[63:0]} : 'bz;
+	assign rdata = read_line[63:0];
 	assign mesi_state_out = Tmesi_state'(read_line[65:64]);
 	
 endmodule : MainMemory

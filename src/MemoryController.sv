@@ -7,11 +7,15 @@
 	input req_CPU,
 	input req_EXT,
 	input [65:0] read_line,
+	input address_wanted_from_memory,
+	input we_to_mm, //from CPU
 	// Output Ports
 	output [65:0] write_line,
 	output we, 
 	output reg gnt_CPU, 
-	output reg gnt_EXT
+	output reg gnt_EXT, 
+	output reg release_EXT, 
+	output read_mm_completed
 );
 /*
    input clk, 
@@ -47,7 +51,7 @@
 					next_state = IDLE;
 				end
 			GNT_CPU: 
-				if (req_CPU) begin
+				if (req_CPU) begin // el cpu va a poner req_cpu en cero despues de cada operacion
 					next_state = GNT_CPU;
 				end else if (req_EXT) begin
 					next_state = GNT_EXT;
@@ -59,9 +63,10 @@
 					next_state = GNT_EXT;
 				end else if (req_CPU) begin
 					next_state = GNT_CPU;
-				end else begin
-					next_state = IDLE;	
+				end else if (release_EXT) begin
+				   next_state = IDLE;
 				end
+
 		default: next_state = IDLE;	
 					
 		endcase
