@@ -11,15 +11,15 @@
     typedef struct {
      logic [7:0] Start;
      Theader Header;
-	  logic [63:0] Data;//Data and address or just Data? Does it includes the MESI ST?
+	  logic [31:0] Data;//Data and address or just Data? Does it includes the MESI ST?
      logic [7:0] Error;
 	  logic [7:0] End; 
 	  
   } Tdata_sb;
   
    typedef struct {
-	  logic [7:0] Address_code;
-	  logic [2:0] Page_reference;
+	  logic [7:0] Index;
+	  logic [15:0] Page_reference;
 	} Taddress;
 	
 	typedef enum logic [1:0] {

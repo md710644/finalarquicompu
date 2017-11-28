@@ -8,11 +8,12 @@ import definesPkg::*;
    logic clk;
 	logic reset;
 	Taddress addr;
-	logic [63:0] wdata; 
+	logic [31:0] wdata; 
 	logic we;
-	logic [63:0] rdata;
+	logic [31:0] rdata;
 	Tmesi_state mesi_state_out;
 	Tmesi_state mesi_state_in;
+	logic [15:0] Page_reference_out;
 
 MainMemory MainMemory0 (.*);
 // initialization
@@ -30,34 +31,32 @@ always
 		
  task read_all_memory;
   $display ("Starting memory reads");
-	 for (integer i =0; i< 2 ; i = i+1) begin
-		for (integer j = 0; j < 255; j = j + 1) begin
+	 for (integer i =0; i< 512 ; i = i+1) begin
 			@(posedge clk)
-			addr.Page_reference <= i;
-			addr.Address_code <= j;
-		end
+			addr.Index <= i;
+			//synthesis translate_off 
+			addr.Page_reference <= $urandom;
+			//synthesis translate_on			
 	 end
  endtask
 
  task write_all_memory;
  $display ("Starting memory writes");
  we= 1'b1;
-	 for (integer i =0; i< 2 ; i = i+1) begin
-		for (integer j = 0; j < 255; j = j + 1) begin
+	 for (integer i =0; i< 512 ; i = i+1) begin
 			@(posedge clk) 
-			addr.Page_reference <= i;
-			addr.Address_code <= j;
+			addr.Index <= i;
 			//synthesis translate_off 
-			wdata <= {$urandom(), $urandom()};//Random
+			addr.Page_reference <= $urandom;
+			wdata <= $urandom();//Random
 			//synthesis translate_on
 			mesi_state_in <= INV;
 		end
-	 end
  we = 1'b0;
  endtask
 
 initial begin
-$monitor ("Read data for Page:%h Addr:%h is %h at time=%4t", addr.Page_reference, addr.Address_code, rdata,  $time);
+$monitor ("Read data for Page:%h Addr:%h is %h at time=%4t", addr.Page_reference, addr.Index, rdata,  $time);
 read_all_memory();
 write_all_memory();
 $finish;
